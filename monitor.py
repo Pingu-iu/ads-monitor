@@ -40,18 +40,20 @@ if __name__ == "__main__":
     start_time = datetime.datetime(2025, 1, 4, 0, 0) # January the fourth 2025
     current_time = datetime.datetime.now()
     # Read campaigns ids from file 
-    with open('campaigns.txt', 'r') as file:
+    with open('campaign_ids.txt', 'r') as file:
         campaigns = file.readlines()
         campaigns = [campaign.strip() for campaign in campaigns]
+        print(f"Read campaigns: {campaigns}")
     
     # Stop campaigns after 6 hours of running 
-    
     for campaign_id in campaigns:
         # Calculate time difference
         time_difference = current_time - start_time
+        print(f"Time difference: {time_difference}")
         
         # If 6 hours have passed, stop the campaign
         if time_difference >= datetime.timedelta(hours=6):
             stop_campaign(campaign_id)
+            print(f"Campaign {campaign_id} has been running for 6 hours. Stopping it.")
         else:
             print(f"Campaign {campaign_id} has not reached 6 hours yet.")
