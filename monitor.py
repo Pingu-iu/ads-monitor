@@ -3,7 +3,6 @@ from facebook_business.api import FacebookAdsApi
 
 import os
 from dotenv import load_dotenv
-import time
 import datetime
 
 # Get Access tokens and app ids
