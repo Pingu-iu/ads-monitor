@@ -4,6 +4,7 @@ from facebook_business.api import FacebookAdsApi
 import os
 from dotenv import load_dotenv
 import datetime
+import pandas as pd 
 
 # Get Access tokens and app ids
 load_dotenv()
@@ -35,18 +36,18 @@ def get_campaign_status(campaign_id):
     print(f"Campaign {campaign_id} status: {campaign['status']}")
     return campaign['status']
 
-# Script will be run every six hours and checks if the campaign has been running for 6 hours
+
 if __name__ == "__main__":
-    start_time = datetime.datetime(2025, 1, 4, 0, 0) # January the fourth 2025
-    current_time = datetime.datetime.now()
-    # Read campaigns ids from file 
-    with open('campaign_ids.txt', 'r') as file:
-        campaigns = file.readlines()
-        campaigns = [campaign.strip() for campaign in campaigns]
-        print(f"Read campaigns: {campaigns}")
+    # Get ids and start times of campaigns
+    campaigns = pd.read_csv('campaigns.csv')
+    print(campaigns)
     
+    current_time = datetime.datetime.now() # top of the hour (when the script is run)
     # Stop campaigns after 6 hours of running 
-    for campaign_id in campaigns:
+    for campaign in campaigns.to_dict(orient='records'):
+        campaign_id = campaign['campaign_id']
+        start_time = datetime.datetime.strptime(campaign['start_time'], '%Y-%m-%d %H:%M:%S')
+        print(f"Campaign {campaign_id} start at {start_time}")
         # Calculate time difference
         time_difference = current_time - start_time
         print(f"Time difference: {time_difference}")
