@@ -38,6 +38,8 @@ def get_campaign_status(campaign_id):
 
 
 if __name__ == "__main__":
+    c = '6623593153799'
+    stop_campaign(c)
     # Get ids and start times of campaigns
     campaigns = pd.read_csv('campaigns.csv')
     print(campaigns)
