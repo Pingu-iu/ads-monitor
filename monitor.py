@@ -38,8 +38,6 @@ def get_campaign_status(campaign_id):
 
 
 if __name__ == "__main__":
-    c = '6623593153799'
-    stop_campaign(c)
     # Get ids and start times of campaigns
     campaigns = pd.read_csv('campaigns.csv')
     print(campaigns)
@@ -54,6 +52,12 @@ if __name__ == "__main__":
         time_difference = current_time - start_time
         print(f"Time difference: {time_difference}")
         
+        # Start campaign at the top of the start hour 
+        if time_difference < datetime.timedelta(hours=1):
+            start_campaign(campaign_id)
+        else:
+            print(f"Campaign {campaign_id} has already started.")
+            
         # If 6 hours have passed, stop the campaign
         if time_difference >= datetime.timedelta(hours=6):
             stop_campaign(campaign_id)
