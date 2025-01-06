@@ -53,7 +53,7 @@ if __name__ == "__main__":
         print(f"Time difference: {time_difference}")
         
         # Start campaign at the top of the start hour 
-        if time_difference < datetime.timedelta(hours=1):
+        if time_difference == datetime.timedelta(hours=0):
             start_campaign(campaign_id)
         else:
             print(f"Campaign {campaign_id} has already started.")
@@ -64,3 +64,24 @@ if __name__ == "__main__":
             print(f"Campaign {campaign_id} has been running for 6 hours. Stopping it.")
         else:
             print(f"Campaign {campaign_id} has not reached 6 hours yet.")
+
+    # load personality campaigns 
+    personality = pd.read_csv('personality.csv')
+    print(personality)
+    
+    current_time = datetime.datetime.now() # top of the hour (when the script is run)
+    # Check if the current time is the end time of the campaigns
+    for campaign in personality.to_dict(orient='records'):
+        campaign_id = campaign['campaign_id']
+        end_time = datetime.datetime.strptime(campaign['end_time'], '%Y-%m-%d %H:%M')
+        
+        # Calculate time difference 
+        time_difference = current_time - end_time
+        if datetime.timedelta(hours=0) <= time_difference < datetime.timedelta(hours=1):
+            stop_campaign(campaign_id)
+            print(f"Campaign {campaign_id} has reached the end time. Stopping it.")
+        else:
+            print(f"Campaign {campaign_id} has not reached the end time yet.")
+            
+    print("All campaigns checked.")
+    
