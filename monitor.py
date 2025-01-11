@@ -38,36 +38,46 @@ def get_campaign_status(campaign_id):
 
 
 if __name__ == "__main__":
+    #####################################################################
+    #              Monitoring LLM microtargeting experiment             # 
+    #####################################################################
     # Get ids and start times of campaigns
     campaigns = pd.read_csv('campaigns.csv')
-    print(campaigns)
     
     current_time = datetime.datetime.now() # top of the hour (when the script is run)
-    # Stop campaigns after 6 hours of running 
+ 
     for campaign in campaigns.to_dict(orient='records'):
         campaign_id = campaign['campaign_id']
         start_time = datetime.datetime.strptime(campaign['start_time'], '%Y-%m-%d %H:%M:%S')
-        print(f"Campaign {campaign_id} start at {start_time}")
+        end_time = datetime.datetime.strptime(campaign['end_time'], '%Y-%m-%d %H:%M:%S')
+        
+        print(f"Campaign {campaign_id} start at {start_time} end at {end_time}")
+        
         # Calculate time difference
         time_difference = current_time - start_time
         print(f"Time difference: {time_difference}")
         
         # Start campaign at the top of the start hour 
-        if time_difference == datetime.timedelta(hours=0):
+        if datetime.timedelta(hours=0) <= time_difference < datetime.timedelta(hours=1):
             start_campaign(campaign_id)
+        elif time_difference < datetime.timedelta(hours=0):
+            print(f"Campaign {campaign_id} has not reached start time yet.")
         else:
             print(f"Campaign {campaign_id} has already started.")
             
-        # If 6 hours have passed, stop the campaign
-        if time_difference >= datetime.timedelta(hours=6):
+        # If end time reached, stop the campaign
+        time_difference = end_time - current_time   
+        if datetime.timedelta(hours=0) <= time_difference < datetime.timedelta(hours=1):
             stop_campaign(campaign_id)
-            print(f"Campaign {campaign_id} has been running for 6 hours. Stopping it.")
+            print(f"Campaign {campaign_id} has reached end time. Stopping it.")
         else:
-            print(f"Campaign {campaign_id} has not reached 6 hours yet.")
-
+            print(f"Campaign {campaign_id} has not reached end time yet.")
+    print('#'*50)        
+    #####################################################################
+    #              Monitoring personality targeting experiment         # 
+    #####################################################################
     # load personality campaigns 
     personality = pd.read_csv('personality.csv')
-    print(personality)
     
     current_time = datetime.datetime.now() # top of the hour (when the script is run)
     # Check if the current time is the end time of the campaigns
